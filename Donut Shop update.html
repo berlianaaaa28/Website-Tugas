@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Donut Shop</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="Donust shop1.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Bèrnat</h1>
+        <h1>Artisan Donut</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#products">Menu</a></li>
+                <li><a href="#cart" id="cart-icon">Order</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Bèrnat Donut Shop</h1>
+            <p>Experience the joy of artisan donuts delivered fresh to your doorstep.</p>
+            <a href="#products" class="btn">Explore Our Menu</a>
+        </div>
+        <div class="hero-image">
+            <img src="C:\Program Files Xampp\htdocs\Tugas Bisnis\Done\hero-donuts.png" alt="Fresh Donuts">
+        </div>
+    </section>
+
+    <!-- Product Section -->
+    <section id="products">
+        <h2>Our Menu Donuts</h2>
+        <div class="product-container">
+            <div class="product">
+                <img src="C:\Program Files Xampp\htdocs\Tugas Bisnis\Done\donut1.jpg" alt="Donut 1">
+                <h3>Chocolate Donut</h3>
+                <p>Price: Rp.5.000</p>
+                <button class="btn add-to-cart" data-product="Chocolate Donut" data-price="5000">Add to Cart</button>
+            </div>
+            <div class="product">
+                <img src="C:\Program Files Xampp\htdocs\Tugas Bisnis\Done\donut2.jpg" alt="Donut 2">
+                <h3>Glazed Donut</h3>
+                <p>Price: Rp.5.000</p>
+                <button class="btn add-to-cart" data-product="Glazed Donut" data-price="5000">Add to Cart</button>
+            </div>
+            <div class="product">
+                <img src="C:\Program Files Xampp\htdocs\Tugas Bisnis\Done\donut3.jpg" alt="Donut 3">
+                <h3>Sprinkles Donut</h3>
+                <p>Price: Rp.5.000</p>
+                <button class="btn add-to-cart" data-product="Sprinkles Donut" data-price="5000">Add to Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Section -->
+    <section id="cart">
+        <h2>Keranjang Saya</h2>
+        <form id="order-form">
+            <div id="cart-details"></div>
+            <div>
+                <label for="name">Nama:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+                <label for="address">Alamat:</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+            <div>
+                <label for="phone">Telephone:</label>
+                <input type="text" id="phone" name="phone" required>
+            </div>
+            <div>
+                <label>Total:</label>
+                <span id="total-price">Rp.0</span>
+            </div>
+            <button type="submit" class="btn">Checkout</button>
+        </form>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <ul>
+            <li><a href="https://maps.app.goo.gl/tT6y4PU6mShWSzJh8" target="_blank"><i class="fas fa-map-marker-alt"></i> Address</a></li>
+            <li><a href="https://www.instagram.com/merakitstuff?igsh=MWlkcnJpbXRsbDlrZw==" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></li>
+            <li><a href="https://wa.me/628813558093" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+        </ul>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Donut Shop. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Initialize cart array
+        let cart = [];
+
+        // Function to update cart details and total price
+        function updateCart() {
+            const cartDetails = document.getElementById('cart-details');
+            const totalPrice = document.getElementById('total-price');
+            cartDetails.innerHTML = ''; // Clear previous cart details
+
+            let total = 0;
+
+            cart.forEach(item => {
+                const div = document.createElement('div');
+                div.textContent = `${item.product} - Rp.${item.price}`;
+                cartDetails.appendChild(div);
+                total += item.price;
+            });
+
+            totalPrice.textContent = `Rp.${total}`;
+        }
+
+        // Event listener for "Add to Cart" buttons
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const product = e.target.dataset.product;
+                const price = parseInt(e.target.dataset.price);
+                cart.push({ product, price });
+
+                // Redirect to the cart page after adding to the cart
+                window.location.hash = '#cart';
+                updateCart();
+            });
+        });
+
+        // Handle form submission for Checkout
+        document.getElementById('order-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const address = document.getElementById('address').value;
+            const phone = document.getElementById('phone').value;
+
+            // Create WhatsApp message with order details
+            let message = `Order from ${name}\nAddress: ${address}\nPhone: ${phone}\n\nOrder Details:\n`;
+
+            cart.forEach(item => {
+                message += `${item.product} - Rp.${item.price}\n`;
+            });
+
+            // Redirect to WhatsApp with order details
+            const whatsappUrl = `https://api.whatsapp.com/send/?phone=628813558093&text=${encodeURIComponent(message)}&type=phone_number&app_absent=0`;
+            window.location.href = whatsappUrl;
+        });
+    </script>
+</body>
+</html>
